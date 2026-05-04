@@ -42,7 +42,7 @@ This app helps users manage their daily medications with reminders, tracking, an
 ## 📱 APK Download
 
 👉 Download the latest APK from Releases:
-🔗 **[Download APK](https://github.com/hanifjamadar77/medreminder/releases/latest)**
+🔗 **[Download APK](https://github.com/hanifjamadar77/Medicine-Reminder/releases/latest)**
 
 > 📌 Note: Notifications work only in APK or development build (not in Expo Go)
 
