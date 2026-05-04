@@ -1,32 +1,33 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-  Modal,
-  Alert,
-  AppState,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Link, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Link, useRouter } from "expo-router";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+    Alert,
+    Animated,
+    AppState,
+    Dimensions,
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import {
-  getMedications,
-  Medication,
-  getTodaysDoses,
-  recordDose,
-  DoseHistory,
-} from "../utils/storage";
-import { useFocusEffect } from "@react-navigation/native";
-import {
-  registerForPushNotificationsAsync,
-  scheduleMedicationReminder,
+    registerForPushNotificationsAsync,
+    scheduleMedicationReminder,
 } from "../utils/notifications";
+import {
+    DoseHistory,
+    getMedications,
+    getTodaysDoses,
+    Medication,
+    recordDose,
+} from "../utils/storage";
+import React from "react";
 
 const { width } = Dimensions.get("window");
 
@@ -160,7 +161,7 @@ export default function HomeScreen() {
           (today >= startDate &&
             today <=
               new Date(
-                startDate.getTime() + durationDays * 24 * 60 * 60 * 1000
+                startDate.getTime() + durationDays * 24 * 60 * 60 * 1000,
               ))
         ) {
           return true;
@@ -180,13 +181,10 @@ export default function HomeScreen() {
 
   const setupNotifications = async () => {
     try {
-      const token = await registerForPushNotificationsAsync();
-      if (!token) {
-        console.log("Failed to get push notification token");
-        return;
-      }
+      // Register for push notifications (optional for local notifications)
+      await registerForPushNotificationsAsync();
 
-      // Schedule reminders for all medications
+      // Schedule reminders for all medications (local notifications)
       const medications = await getMedications();
       for (const medication of medications) {
         if (medication.reminderEnabled) {
@@ -224,7 +222,7 @@ export default function HomeScreen() {
 
       loadMedications();
       return () => unsubscribe();
-    }, [loadMedications])
+    }, [loadMedications]),
   );
 
   const handleTakeDose = async (medication: Medication) => {
@@ -239,7 +237,7 @@ export default function HomeScreen() {
 
   const isDoseTaken = (medicationId: string) => {
     return doseHistory.some(
-      (dose) => dose.medicationId === medicationId && dose.taken
+      (dose) => dose.medicationId === medicationId && dose.taken,
     );
   };
 
@@ -283,7 +281,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
             {QUICK_ACTIONS.map((action) => (
-              <Link href = {action.route} key={action.label} asChild>
+              <Link href={action.route} key={action.label} asChild>
                 <TouchableOpacity style={styles.actionButton}>
                   <LinearGradient
                     colors={action.gradient}

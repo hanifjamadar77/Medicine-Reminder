@@ -22,6 +22,7 @@ import {
   scheduleMedicationReminder,
   scheduleRefillReminder,
 } from "../../utils/notifications";
+import React from "react";
 
 const { width } = Dimensions.get("window");
 

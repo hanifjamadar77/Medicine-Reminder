@@ -1,23 +1,23 @@
-import React, { useState, useCallback } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-  Alert,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
-  getDoseHistory,
-  getMedications,
+  Alert,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
   DoseHistory,
   Medication,
   clearAllData,
+  getDoseHistory,
+  getMedications,
 } from "../../utils/storage";
 
 type EnrichedDoseHistory = DoseHistory & { medication?: Medication };
@@ -51,21 +51,24 @@ export default function HistoryScreen() {
   useFocusEffect(
     useCallback(() => {
       loadHistory();
-    }, [loadHistory])
+    }, [loadHistory]),
   );
 
-  const groupHistoryByDate = () => {
-    const grouped = history.reduce((acc, dose) => {
-      const date = new Date(dose.timestamp).toDateString();
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(dose);
-      return acc;
-    }, {} as Record<string, EnrichedDoseHistory[]>);
+  const groupHistoryByDate = (data: EnrichedDoseHistory[]) => {
+    const grouped = data.reduce(
+      (acc, dose) => {
+        const date = new Date(dose.timestamp).toDateString();
+        if (!acc[date]) {
+          acc[date] = [];
+        }
+        acc[date].push(dose);
+        return acc;
+      },
+      {} as Record<string, EnrichedDoseHistory[]>,
+    );
 
     return Object.entries(grouped).sort(
-      (a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime()
+      (a, b) => new Date(b[0]).getTime() - new Date(a[0]).getTime(),
     );
   };
 
@@ -76,7 +79,7 @@ export default function HistoryScreen() {
     return true;
   });
 
-  const groupedHistory = groupHistoryByDate();
+  const groupedHistory = groupHistoryByDate(filteredHistory);
 
   const handleClearAllData = () => {
     Alert.alert(
@@ -101,7 +104,7 @@ export default function HistoryScreen() {
             }
           },
         },
-      ]
+      ],
     );
   };
 

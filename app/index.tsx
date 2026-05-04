@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, StyleSheet,Animated  } from "react-native
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { router } from "expo-router";
 import { useEffect, useRef  } from "react";
+import React from "react";
 
 export default function Home() {
 
@@ -24,7 +25,8 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  return <View style={styles.container}>
+  return(
+  <View style={styles.container}>
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         <FontAwesome6 name="medrt" size={74} color="white" />
       </Animated.View>
@@ -32,7 +34,9 @@ export default function Home() {
       <Animated.Text style={[styles.title, { transform: [{ scale: scaleAnim }] }]}>
         MED REMINDER
       </Animated.Text>
-  </View>;
+  </View>
+  );
+
 }
 
 const styles = StyleSheet.create({

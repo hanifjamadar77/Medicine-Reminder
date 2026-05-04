@@ -50,7 +50,7 @@ export async function registerForPushNotificationsAsync(): Promise<
 }
 
 export async function scheduleMedicationReminder(
-  medication: Medication
+  medication: Medication,
 ): Promise<string | undefined> {
   if (!medication.reminderEnabled) return;
 
@@ -73,13 +73,14 @@ export async function scheduleMedicationReminder(
           data: { medicationId: medication.id },
         },
         trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
           hour: hours,
           minute: minutes,
           repeats: true,
         },
       });
 
-      return identifier;
+      // Note: Not returning here to schedule all times
     }
   } catch (error) {
     console.error("Error scheduling medication reminder:", error);
@@ -88,7 +89,7 @@ export async function scheduleMedicationReminder(
 }
 
 export async function scheduleRefillReminder(
-  medication: Medication
+  medication: Medication,
 ): Promise<string | undefined> {
   if (!medication.refillReminder) return;
 
@@ -113,7 +114,7 @@ export async function scheduleRefillReminder(
 }
 
 export async function cancelMedicationReminders(
-  medicationId: string
+  medicationId: string,
 ): Promise<void> {
   try {
     const scheduledNotifications =
@@ -125,7 +126,7 @@ export async function cancelMedicationReminders(
       } | null;
       if (data?.medicationId === medicationId) {
         await Notifications.cancelScheduledNotificationAsync(
-          notification.identifier
+          notification.identifier,
         );
       }
     }
@@ -135,7 +136,7 @@ export async function cancelMedicationReminders(
 }
 
 export async function updateMedicationReminders(
-  medication: Medication
+  medication: Medication,
 ): Promise<void> {
   try {
     // Cancel existing reminders
