@@ -34,11 +34,22 @@ export async function registerForPushNotificationsAsync(): Promise<
     token = response.data;
 
     if (Platform.OS === "android") {
-      await Notifications.setNotificationChannelAsync("default", {
-        name: "default",
-        importance: Notifications.AndroidImportance.MAX,
+      await Notifications.setNotificationChannelAsync("medication-reminders", {
+        name: "Medication Reminders",
+        importance: Notifications.AndroidImportance.HIGH,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#1a8e2d",
+        sound: "default",
+        showBadge: true,
+      });
+
+      await Notifications.setNotificationChannelAsync("refill-reminders", {
+        name: "Refill Reminders",
+        importance: Notifications.AndroidImportance.DEFAULT,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: "#FF9800",
+        sound: "default",
+        showBadge: true,
       });
     }
 
@@ -71,6 +82,8 @@ export async function scheduleMedicationReminder(
           title: "Medication Reminder",
           body: `Time to take ${medication.name} (${medication.dosage})`,
           data: { medicationId: medication.id },
+          sound: "default",
+          priority: Notifications.AndroidNotificationPriority.HIGH,
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.CALENDAR,
@@ -78,6 +91,9 @@ export async function scheduleMedicationReminder(
           minute: minutes,
           repeats: true,
         },
+        ...(Platform.OS === "android" && {
+          channelId: "medication-reminders",
+        }),
       });
 
       // Note: Not returning here to schedule all times
@@ -101,8 +117,13 @@ export async function scheduleRefillReminder(
           title: "Refill Reminder",
           body: `Your ${medication.name} supply is running low. Current supply: ${medication.currentSupply}`,
           data: { medicationId: medication.id, type: "refill" },
+          sound: "default",
+          priority: Notifications.AndroidNotificationPriority.DEFAULT,
         },
         trigger: null, // Show immediately
+        ...(Platform.OS === "android" && {
+          channelId: "refill-reminders",
+        }),
       });
 
       return identifier;
@@ -135,17 +156,22 @@ export async function cancelMedicationReminders(
   }
 }
 
-export async function updateMedicationReminders(
-  medication: Medication,
-): Promise<void> {
+export async function testNotification(): Promise<void> {
   try {
-    // Cancel existing reminders
-    await cancelMedicationReminders(medication.id);
-
-    // Schedule new reminders
-    await scheduleMedicationReminder(medication);
-    await scheduleRefillReminder(medication);
+    const identifier = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Test Notification",
+        body: "This is a test notification to verify notifications are working",
+        sound: "default",
+        priority: Notifications.AndroidNotificationPriority.HIGH,
+      },
+      trigger: null, // Show immediately
+      ...(Platform.OS === "android" && {
+        channelId: "medication-reminders",
+      }),
+    });
+    console.log("Test notification scheduled:", identifier);
   } catch (error) {
-    console.error("Error updating medication reminders:", error);
+    console.error("Error scheduling test notification:", error);
   }
 }

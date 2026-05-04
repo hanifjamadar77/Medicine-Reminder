@@ -1,23 +1,23 @@
-import React, { useState, useCallback, JSX } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Platform,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
-import {
-  getMedications,
-  getDoseHistory,
-  recordDose,
-  Medication,
-  DoseHistory,
-} from "../../utils/storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import React, { JSX, useCallback, useState } from "react";
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import {
+  DoseHistory,
+  getDoseHistory,
+  getMedications,
+  Medication,
+  recordDose,
+} from "../../utils/storage";
 
 const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -43,7 +43,7 @@ export default function CalendarScreen() {
   useFocusEffect(
     useCallback(() => {
       loadData();
-    }, [loadData])
+    }, [loadData]),
   );
 
   const getDaysInMonth = (date: Date) => {
@@ -70,12 +70,12 @@ export default function CalendarScreen() {
       const date = new Date(
         selectedDate.getFullYear(),
         selectedDate.getMonth(),
-        day
+        day,
       );
       const isToday = new Date().toDateString() === date.toDateString();
       const hasDoses = doseHistory.some(
         (dose) =>
-          new Date(dose.timestamp).toDateString() === date.toDateString()
+          new Date(dose.timestamp).toDateString() === date.toDateString(),
       );
 
       week.push(
@@ -92,14 +92,14 @@ export default function CalendarScreen() {
             {day}
           </Text>
           {hasDoses && <View style={styles.eventDot} />}
-        </TouchableOpacity>
+        </TouchableOpacity>,
       );
 
       if ((firstDay + day) % 7 === 0 || day === days) {
         calendar.push(
           <View key={day} style={styles.calendarWeek}>
             {week}
-          </View>
+          </View>,
         );
         week = [];
       }
@@ -111,12 +111,12 @@ export default function CalendarScreen() {
   const renderMedicationsForDate = () => {
     const dateStr = selectedDate.toDateString();
     const dayDoses = doseHistory.filter(
-      (dose) => new Date(dose.timestamp).toDateString() === dateStr
+      (dose) => new Date(dose.timestamp).toDateString() === dateStr,
     );
 
     return medications.map((medication) => {
       const taken = dayDoses.some(
-        (dose) => dose.medicationId === medication.id && dose.taken
+        (dose) => dose.medicationId === medication.id && dose.taken,
       );
 
       return (
@@ -176,65 +176,71 @@ export default function CalendarScreen() {
           <Text style={styles.headerTitle}>Calendar</Text>
         </View>
 
-        <View style={styles.calendarContainer}>
-          <View style={styles.monthHeader}>
-            <TouchableOpacity
-              onPress={() =>
-                setSelectedDate(
-                  new Date(
-                    selectedDate.getFullYear(),
-                    selectedDate.getMonth() - 1,
-                    1
+        <ScrollView
+          style={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.calendarContainer}>
+            <View style={styles.monthHeader}>
+              <TouchableOpacity
+                onPress={() =>
+                  setSelectedDate(
+                    new Date(
+                      selectedDate.getFullYear(),
+                      selectedDate.getMonth() - 1,
+                      1,
+                    ),
                   )
-                )
-              }
-            >
-              <Ionicons name="chevron-back" size={24} color="#333" />
-            </TouchableOpacity>
-            <Text style={styles.monthText}>
-              {selectedDate.toLocaleString("default", {
+                }
+              >
+                <Ionicons name="chevron-back" size={24} color="#333" />
+              </TouchableOpacity>
+              <Text style={styles.monthText}>
+                {selectedDate.toLocaleString("default", {
+                  month: "long",
+                  year: "numeric",
+                })}
+              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  setSelectedDate(
+                    new Date(
+                      selectedDate.getFullYear(),
+                      selectedDate.getMonth() + 1,
+                      1,
+                    ),
+                  )
+                }
+              >
+                <Ionicons name="chevron-forward" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.weekdayHeader}>
+              {WEEKDAYS.map((day) => (
+                <Text key={day} style={styles.weekdayText}>
+                  {day}
+                </Text>
+              ))}
+            </View>
+
+            <View style={styles.calendarGrid}>{renderCalendar()}</View>
+          </View>
+
+          <View style={styles.scheduleContainer}>
+            <Text style={styles.scheduleTitle}>
+              {selectedDate.toLocaleDateString("default", {
+                weekday: "long",
                 month: "long",
-                year: "numeric",
+                day: "numeric",
               })}
             </Text>
-            <TouchableOpacity
-              onPress={() =>
-                setSelectedDate(
-                  new Date(
-                    selectedDate.getFullYear(),
-                    selectedDate.getMonth() + 1,
-                    1
-                  )
-                )
-              }
-            >
-              <Ionicons name="chevron-forward" size={24} color="#333" />
-            </TouchableOpacity>
+            <View style={styles.medicationsList}>
+              {renderMedicationsForDate()}
+            </View>
           </View>
-
-          <View style={styles.weekdayHeader}>
-            {WEEKDAYS.map((day) => (
-              <Text key={day} style={styles.weekdayText}>
-                {day}
-              </Text>
-            ))}
-          </View>
-
-          {renderCalendar()}
-        </View>
-
-        <View style={styles.scheduleContainer}>
-          <Text style={styles.scheduleTitle}>
-            {selectedDate.toLocaleDateString("default", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </Text>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {renderMedicationsForDate()}
-          </ScrollView>
-        </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -255,6 +261,12 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingTop: Platform.OS === "ios" ? 50 : 30,
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingBottom: 20,
   },
   header: {
     flexDirection: "row",
@@ -292,6 +304,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+  },
+  calendarGrid: {
+    marginTop: 10,
   },
   monthHeader: {
     flexDirection: "row",
@@ -348,16 +363,20 @@ const styles = StyleSheet.create({
     bottom: "15%",
   },
   scheduleContainer: {
-    flex: 1,
     backgroundColor: "white",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+  },
+  medicationsList: {
+    minHeight: 100,
   },
   scheduleTitle: {
     fontSize: 20,
