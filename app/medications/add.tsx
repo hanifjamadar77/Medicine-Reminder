@@ -1,28 +1,25 @@
-import { useState } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-  Switch,
-  Dimensions,
-  Platform,
-  KeyboardAvoidingView,
-  Alert,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { LinearGradient } from "expo-linear-gradient";
-import { BlurView } from "expo-blur";
-import { addMedication } from "../../utils/storage";
+import { useRouter } from "expo-router";
+import React, { useState } from "react";
+import {
+  Alert,
+  Dimensions,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native";
 import {
   scheduleMedicationReminder,
   scheduleRefillReminder,
 } from "../../utils/notifications";
-import React from "react";
+import { addMedication } from "../../utils/storage";
 
 const { width } = Dimensions.get("window");
 
@@ -84,6 +81,7 @@ export default function AddMedicationScreen() {
   const [selectedFrequency, setSelectedFrequency] = useState("");
   const [selectedDuration, setSelectedDuration] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedTimeIndex, setSelectedTimeIndex] = useState(0);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -164,7 +162,7 @@ export default function AddMedicationScreen() {
             onPress: () => router.back(),
           },
         ],
-        { cancelable: false }
+        { cancelable: false },
       );
     } catch (error) {
       console.error("Save error:", error);
@@ -172,7 +170,7 @@ export default function AddMedicationScreen() {
         "Error",
         "Failed to save medication. Please try again.",
         [{ text: "OK" }],
-        { cancelable: false }
+        { cancelable: false },
       );
     } finally {
       setIsSubmitting(false);
@@ -212,7 +210,7 @@ export default function AddMedicationScreen() {
             ]}
             onPress={() => {
               setSelectedFrequency(freq.label);
-              setForm({ ...form, frequency: freq.label });
+              setForm({ ...form, frequency: freq.label, times: freq.times });
             }}
           >
             <View
@@ -387,6 +385,7 @@ export default function AddMedicationScreen() {
                     key={index}
                     style={styles.timeButton}
                     onPress={() => {
+                      setSelectedTimeIndex(index);
                       setShowTimePicker(true);
                     }}
                   >
@@ -400,10 +399,12 @@ export default function AddMedicationScreen() {
               </View>
             )}
 
-            {showTimePicker && (
+            {showTimePicker && form.times.length > 0 && (
               <DateTimePicker
                 value={(() => {
-                  const [hours, minutes] = form.times[0].split(":").map(Number);
+                  const [hours, minutes] = form.times[selectedTimeIndex]
+                    ?.split(":")
+                    .map(Number) || [9, 0];
                   const date = new Date();
                   date.setHours(hours, minutes, 0, 0);
                   return date;
@@ -419,7 +420,9 @@ export default function AddMedicationScreen() {
                     });
                     setForm((prev) => ({
                       ...prev,
-                      times: prev.times.map((t, i) => (i === 0 ? newTime : t)),
+                      times: prev.times.map((t, i) =>
+                        i === selectedTimeIndex ? newTime : t,
+                      ),
                     }));
                   }
                 }}
