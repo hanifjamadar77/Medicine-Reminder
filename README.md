@@ -1,50 +1,55 @@
-# Welcome to your Expo app 👋
+# 💊 MedReminder App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A cross-platform **Medication Reminder Application** built using React Native and Expo.
+This app helps users manage their daily medications with reminders, tracking, and refill alerts.
 
-## Get started
+---
 
-1. Install dependencies
+## 🚀 Features
 
-   ```bash
-   npm install
-   ```
+* 💊 Medication scheduling with custom reminder times
+* 🔔 Smart notifications for doses and refills
+* 📅 Daily progress tracking (Taken / Missed logs)
+* 🗓️ Calendar-based medication management
+* 🔐 Biometric authentication (Face ID / Fingerprint)
+* 📦 Refill tracking with low supply alerts
+* 💾 Secure local storage using AsyncStorage
+* 📱 Cross-platform support (Android & iOS)
 
-2. Start the app
+---
 
-   ```bash
-   npx expo start
-   ```
+## 🛠️ Tech Stack
 
-In the output, you'll find options to open the app in a
+* ⚛️ React Native
+* 🚀 Expo
+* 📘 TypeScript
+* 🧭 React Navigation
+* 🔔 Expo Notifications
+* 💾 AsyncStorage
+* 🎨 React Native Reanimated
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+---
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## 📸 Screenshots
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/2d943fbf-d74c-41ba-9f97-c5245ead8f17" width="250" />
+  <img src="https://github.com/user-attachments/assets/e29e61c5-dd23-459e-8164-11576f48f9be" width="250" />
+  <img src="https://github.com/user-attachments/assets/409f9433-4df4-4345-b694-29ee2c5075f6" width="250" />
+</p>
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 📱 APK Download
 
-```bash
-npm run reset-project
-```
+👉 Download the latest APK from Releases:
+🔗 **[Download APK](https://github.com/hanifjamadar77/medreminder/releases/latest)**
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+> 📌 Note: Notifications work only in APK or development build (not in Expo Go)
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## ⭐ If you like this project
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Give it a ⭐ on GitHub!
 
-## Join the community
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
